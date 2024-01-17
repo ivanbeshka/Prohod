@@ -2,4 +2,7 @@
     <string name="app_name">Prohod</string>
     <string name="description">ОПЦИОНАЛЬНО ДОБАВИТЬ ЭТО ДУРАЦКОЕ ОПИСАНИЕ СЕРВИСА, НО ОНО МНЕ ЗДЕСЬ НЕ НРАВИТСЯ</string>
     <string name="go_to_rtf">пройти в ирит-ртф</string>
+    <string name="fill_request">Заполните заявку</string>
+    <string name="generate_qr_header">Генерация QR-кода</string>
+    <string name="generate_qr">Сгенерировать QR</string>
 </resources>

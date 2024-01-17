@@ -25,10 +25,33 @@ val TextStyleRegular = TextStyle(
     textAlign = TextAlign.Center,
 )
 
-val ButtonTextStyle = TextStyle(
+val TextStyleSmall = TextStyle(
+    fontSize = 16.sp,
+    fontFamily = FontFamily(Font(R.font.gilroy_regular)),
+    fontWeight = FontWeight(400),
+    color = Color.White
+)
+
+val TextStyleLabel = TextStyle(
+    fontSize = 12.sp,
+    lineHeight = 16.sp,
+    fontFamily = FontFamily(Font(R.font.gilroy_regular)),
+    fontWeight = FontWeight(400),
+    color = Color.White,
+)
+
+val TextStyleButton = TextStyle(
     fontSize = 14.sp,
     fontFamily = FontFamily(Font(R.font.gilroy_medium)),
     fontWeight = FontWeight(500),
     color = BlueDark,
+    textAlign = TextAlign.Center
+)
+
+val TextStyleOutlinedButton = TextStyle(
+    fontSize = 14.sp,
+    fontFamily = FontFamily(Font(R.font.gilroy_medium)),
+    fontWeight = FontWeight(500),
+    color = Cyan,
     textAlign = TextAlign.Center
 )
