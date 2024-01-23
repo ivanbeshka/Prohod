@@ -1,19 +1,25 @@
-package com.example.prohod
+package com.example.prohod.ui.screens
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.prohod.ui.HeaderLogo
 import com.example.prohod.ui.theme.Background
 import com.example.prohod.ui.theme.ProhodTheme
+import com.example.prohod.ui.viewmodels.StatusViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private val statusViewModel by viewModels<StatusViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -27,14 +33,27 @@ class MainActivity : ComponentActivity() {
                 ) {}
                 NavHost(
                     navController = navController,
-                    startDestination = MainNav.StartScreen.TAG
+                    startDestination = if (!statusViewModel.getSkipStartScreen()) {
+                        MainNav.StartScreen.TAG
+                    } else if (!statusViewModel.getSkipRequestScreen()) {
+                        MainNav.RequestScreen.TAG
+                    } else {
+                        MainNav.GenerateQRScreen.TAG
+                    }
                 ) {
-                    composable(MainNav.StartScreen.TAG) {
-                        StartScreen(navController)
+
+                    if (!statusViewModel.getSkipStartScreen()) {
+                        composable(MainNav.StartScreen.TAG) {
+                            StartScreen(navController)
+                        }
                     }
-                    composable(MainNav.RequestScreen.TAG) {
-                        RequestScreen(navController)
+
+                    if (!statusViewModel.getSkipRequestScreen()) {
+                        composable(MainNav.RequestScreen.TAG) {
+                            RequestScreen(navController)
+                        }
                     }
+
                     composable(MainNav.GenerateQRScreen.TAG) {
                         GenerateQRScreen(navController)
                     }

@@ -1,10 +1,8 @@
-package com.example.prohod
+package com.example.prohod.ui.screens
 
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,13 +14,17 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.prohod.ui.ButtonBase
-import com.example.prohod.ui.HeaderLogo
+import com.example.prohod.R
+import com.example.prohod.ui.components.HeaderLogo
+import com.example.prohod.ui.theme.ButtonBase
 import com.example.prohod.ui.theme.Cyan
 import com.example.prohod.ui.theme.TextStyleMedium
 import com.example.prohod.ui.theme.TextStyleRegular
+import com.example.prohod.ui.viewmodels.StatusViewModel
 
 @Preview
 @Composable
@@ -34,6 +36,8 @@ private fun Preview() {
 fun StartScreen(
     navController: NavHostController
 ) {
+    val statusViewModel = hiltViewModel<StatusViewModel>()
+
     HeaderLogo()
 
     ConstraintLayout(Modifier.fillMaxSize()) {
@@ -48,18 +52,25 @@ fun StartScreen(
         )
 
         Text(
-            text = stringResource(id = R.string.description),
+            text = stringResource(id = R.string.description).uppercase(),
             style = TextStyleRegular,
             modifier = Modifier
                 .constrainAs(textDesc) {
                     top.linkTo(textHello.bottom)
                 }
                 .padding(top = 47.dp)
-                .padding(horizontal = 60.dp)
+                .padding(horizontal = 50.dp)
         )
 
         ButtonBase(
-            onClick = { navController.navigate(MainNav.RequestScreen.TAG) },
+            onClick = {
+                statusViewModel.setSkipStartScreen()
+                navController.navigate(MainNav.RequestScreen.TAG) {
+                    popUpTo(MainNav.StartScreen.TAG) {
+                        inclusive = true
+                    }
+                }
+            },
             modifier = Modifier
                 .constrainAs(buttonNext) {
                     bottom.linkTo(parent.bottom)

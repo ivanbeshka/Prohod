@@ -1,4 +1,4 @@
-package com.example.prohod.ui
+package com.example.prohod.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

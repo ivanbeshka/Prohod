@@ -1,4 +1,4 @@
-package com.example.prohod.ui
+package com.example.prohod.ui.theme
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -9,11 +9,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.prohod.ui.theme.Background
-import com.example.prohod.ui.theme.BlueDark
-import com.example.prohod.ui.theme.Cyan
-import com.example.prohod.ui.theme.TextStyleButton
-import com.example.prohod.ui.theme.TextStyleOutlinedButton
 
 @Composable
 fun ButtonBase(
