@@ -3,7 +3,6 @@ package com.example.prohod.di.modules
 import com.example.prohod.data.api.ApiHelper
 import com.example.prohod.data.api.ApiHelperImpl
 import com.example.prohod.data.api.ApiService
-import com.example.prohod.utils.AuthSharedPref
 import com.example.prohod.utils.INeedTokenUpdate
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
@@ -34,21 +33,15 @@ class NetworkModule {
     @Provides
     fun provideClient(
         logging: HttpLoggingInterceptor,
-        bearerTokenInterceptor: BearerTokenInterceptor
+        jwtInterceptor: JwtInterceptor,
+        jwtAuth: JwtAuth
     ): OkHttpClient {
         return OkHttpClient.Builder()
+            .authenticator(jwtAuth)
+            .addInterceptor(jwtInterceptor)
             .addInterceptor(logging)
-            .addInterceptor(bearerTokenInterceptor)
             .build()
     }
-
-    @Singleton
-    @Provides
-    fun provideNeedTokenUpdateImpl(): NeedTokenUpdateImpl = NeedTokenUpdateImpl()
-
-    @Singleton
-    @Provides
-    fun provideINeedTokenUpdate(needTokenUpdateImpl: NeedTokenUpdateImpl): INeedTokenUpdate = needTokenUpdateImpl
 
     @OptIn(ExperimentalSerializationApi::class)
     @Singleton
@@ -76,7 +69,7 @@ class NetworkModule {
     fun provideApiHelper(apiService: ApiService): ApiHelper = ApiHelperImpl(apiService)
 
     private companion object {
-        private const val BASE_URL = "http://51.250.94.4/api/v1/"
+        private const val BASE_URL = "https://prohod-backend.onrender.com/api/v1/"
         private const val CONVERTER_FACTORY_TYPE = "application/json"
     }
 }

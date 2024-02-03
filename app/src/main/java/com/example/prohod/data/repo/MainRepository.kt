@@ -16,9 +16,7 @@ class MainRepository @Inject constructor(
     private val authSharedPref: AuthSharedPref
 ) {
 
-//    suspend fun loginAdmin() = login()
-
-    suspend fun loginExistedUser() = login(authSharedPref.login, authSharedPref.password)
+    suspend fun loginUser() = login(authSharedPref.login, authSharedPref.password)
 
     suspend fun sendRequest(
         name: String,
@@ -95,11 +93,12 @@ class MainRepository @Inject constructor(
 
     suspend fun isVisitRequestAccepted(): Boolean {
         apiHelper.getVisitRequests().body()?.let {
-            val form = it.visitRequests.last { visitRequest ->
-                visitRequest.form.passport.fullName == authSharedPref.login
+            val form = it.visitRequests.lastOrNull { visitRequest ->
+                visitRequest.form.passport.fullName == authSharedPref.senderFullName
             }
-
-            return form.status == "Accept"
+            form?.let { request ->
+                return request.status == "Accept"
+            }
         }
         return false
     }
@@ -129,7 +128,7 @@ class MainRepository @Inject constructor(
 
         val response = apiHelper.sendVisitRequest(VisitRequest(visitForm))
         if (response.isSuccessful) {
-            //authSharedPref.login = fullName
+            authSharedPref.senderFullName = fullName
         }
         return response.isSuccessful
     }

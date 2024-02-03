@@ -39,7 +39,7 @@ class SendRequestViewModel @Inject constructor(
             val passportIssueDate = "2024-02-02T10:43:24.573Z" //fieldToValue[ChapterTextField.PASSPORT_ISSUE_DATE]?.value ?:
             val passportIssuedBy = fieldToValue[ChapterTextField.PASSPORT_ISSUED_BY]?.value ?: ""
             val visitDate = "2024-02-02T10:43:24.573Z" //fieldToValue[ChapterTextField.VISIT_DATE]?.value ?:
-            val whoToVisit = "05fd16d6-d17a-40a7-9c63-aa81e1ccc266" //fieldToValue[ChapterTextField.WHO_TO_VISIT]?.value?.data ?: ""
+            val whoToVisit = "237e1389-077f-4ee1-9950-8bbd18a68abe" //fieldToValue[ChapterTextField.WHO_TO_VISIT]?.value?.data ?: ""
             val visitReason = fieldToValue[ChapterTextField.VISIT_REASON]?.value ?: ""
             val email = fieldToValue[ChapterTextField.EMAIL]?.value ?: ""
 

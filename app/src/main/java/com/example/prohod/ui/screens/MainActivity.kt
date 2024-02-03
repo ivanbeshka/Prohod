@@ -12,7 +12,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.prohod.ui.theme.Background
 import com.example.prohod.ui.theme.ProhodTheme
-import com.example.prohod.ui.viewmodels.AuthViewModel
 import com.example.prohod.ui.viewmodels.StatusViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -20,7 +19,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val statusViewModel by viewModels<StatusViewModel>()
-    private val authViewModel by viewModels<AuthViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,8 +58,6 @@ class MainActivity : ComponentActivity() {
                         GenerateQRScreen(navController)
                     }
                 }
-
-                authViewModel.subscribeOnTokenUpdating()
             }
         }
     }

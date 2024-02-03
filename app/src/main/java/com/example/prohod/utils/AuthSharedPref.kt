@@ -32,6 +32,18 @@ class AuthSharedPref @Inject constructor(@ApplicationContext context: Context) {
             }
         }
 
+    var senderFullName: String?
+        get() {
+            return preferences.getString(SENDER_FULL_NAME_KEY, null)
+        }
+        set(value) {
+            value?.let {
+                preferences.edit()
+                    .putString(SENDER_FULL_NAME_KEY, it)
+                    .apply()
+            }
+        }
+
     var login: String?
         get() {
             return preferences.getString(LOGIN_KEY, "admin")
@@ -46,7 +58,7 @@ class AuthSharedPref @Inject constructor(@ApplicationContext context: Context) {
 
     var password: String?
         get() {
-            return preferences.getString(PASS_KEY, "VfjPcLDyTIC5")
+            return preferences.getString(PASS_KEY, "bq#CN1a4Oezp")
         }
         set(value) {
             value?.let {
@@ -62,5 +74,6 @@ class AuthSharedPref @Inject constructor(@ApplicationContext context: Context) {
         private const val USER_ID_KEY = "user_id"
         private const val LOGIN_KEY = "login"
         private const val PASS_KEY = "pass"
+        private const val SENDER_FULL_NAME_KEY = "sender_full_name"
     }
 }

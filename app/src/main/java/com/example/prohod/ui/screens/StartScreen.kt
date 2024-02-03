@@ -34,10 +34,9 @@ private fun Preview() {
 
 @Composable
 fun StartScreen(
-    navController: NavHostController
+    navController: NavHostController,
+    statusViewModel: StatusViewModel = hiltViewModel<StatusViewModel>()
 ) {
-    val statusViewModel = hiltViewModel<StatusViewModel>()
-
     HeaderLogo()
 
     ConstraintLayout(Modifier.fillMaxSize()) {
