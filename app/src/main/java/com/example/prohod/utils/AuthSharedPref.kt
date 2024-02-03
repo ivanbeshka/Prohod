@@ -34,7 +34,7 @@ class AuthSharedPref @Inject constructor(@ApplicationContext context: Context) {
 
     var login: String?
         get() {
-            return preferences.getString(LOGIN_KEY, null)
+            return preferences.getString(LOGIN_KEY, "admin")
         }
         set(value) {
             value?.let {
@@ -46,7 +46,7 @@ class AuthSharedPref @Inject constructor(@ApplicationContext context: Context) {
 
     var password: String?
         get() {
-            return preferences.getString(PASS_KEY, null)
+            return preferences.getString(PASS_KEY, "VfjPcLDyTIC5")
         }
         set(value) {
             value?.let {

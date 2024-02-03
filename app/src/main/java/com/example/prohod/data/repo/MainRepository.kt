@@ -18,7 +18,7 @@ class MainRepository @Inject constructor(
 
 //    suspend fun loginAdmin() = login()
 
-    private suspend fun loginExistedUser() = login(authSharedPref.login, authSharedPref.password)
+    suspend fun loginExistedUser() = login(authSharedPref.login, authSharedPref.password)
 
     suspend fun sendRequest(
         name: String,
@@ -129,7 +129,7 @@ class MainRepository @Inject constructor(
 
         val response = apiHelper.sendVisitRequest(VisitRequest(visitForm))
         if (response.isSuccessful) {
-            authSharedPref.login = fullName
+            //authSharedPref.login = fullName
         }
         return response.isSuccessful
     }

@@ -1,5 +1,6 @@
 package com.example.prohod.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,9 +26,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -74,12 +79,15 @@ fun RequestScreen(navController: NavHostController) {
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
+
+        var isCheckedPersonalData by remember { mutableStateOf(false) }
+        val context = LocalContext.current
+
         HeaderLogo()
         Text(
             text = stringResource(id = R.string.fill_request),
             style = TextStyleMedium,
-            modifier = Modifier
-                .padding(start = 62.dp)
+            modifier = Modifier.padding(start = 62.dp)
         )
         Chapters()
         Row(
@@ -87,10 +95,10 @@ fun RequestScreen(navController: NavHostController) {
                 .fillMaxWidth()
                 .padding(top = 16.dp)
         ) {
-            var isChecked by remember { mutableStateOf(false) }
+
             Checkbox(
-                checked = isChecked,
-                onCheckedChange = { isChecked = it },
+                checked = isCheckedPersonalData,
+                onCheckedChange = { isCheckedPersonalData = it },
                 modifier = Modifier
                     .padding(end = 2.dp)
                     .align(Alignment.CenterVertically)
@@ -103,18 +111,15 @@ fun RequestScreen(navController: NavHostController) {
         }
         ButtonBase(
             onClick = {
-                sendRequestViewModel.sendRequest(
-                    "Иван",
-                    "Иванов",
-                    "Иванович",
-                    "6522 686868",
-                    "2023-01-12T12:11:17.635Z",
-                    "МВД России по Свердловской обл.",
-                    "2024-01-23T12:11:17.635Z",
-                    "05fd16d6-d17a-40a7-9c63-aa81e1ccc266",
-                    "Сдать проект",
-                    "ivanivanovich@gmail.com"
-                )
+                if (isCheckedPersonalData) {
+                    sendRequestViewModel.sendRequest()
+                } else {
+                    Toast.makeText(
+                        context,
+                        "Необходимо согласие на обработку персональных данных",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             },
             text = "отправить заявку",
             modifier = Modifier
@@ -128,32 +133,29 @@ fun RequestScreen(navController: NavHostController) {
 @Composable
 private fun Chapters() {
     RequestChapter(
-        chapter = 1,
-        chapterHeader = "Паспортные данные",
-        items = listOf(
-            ChapterItem("Фамилия"),
-            ChapterItem("Имя"),
-            ChapterItem("Отчество"),
-            ChapterItem("Серия и номер паспорта"),
-            ChapterItem("Дата выдачи паспорта"),
-            ChapterItem("Кем выдан паспорт")
+        chapter = 1, chapterHeader = "Паспортные данные", items = listOf(
+            ChapterItem("Фамилия", ChapterTextField.SURNAME),
+            ChapterItem("Имя", ChapterTextField.NAME),
+            ChapterItem("Отчество", ChapterTextField.PATRONYMIC),
+            ChapterItem("Серия и номер паспорта", ChapterTextField.PASSPORT_NUMBER_AND_SERIES),
+            ChapterItem("Дата выдачи паспорта", ChapterTextField.PASSPORT_ISSUE_DATE),
+            ChapterItem("Кем выдан паспорт", ChapterTextField.PASSPORT_ISSUED_BY)
         )
     )
     RequestChapter(
-        chapter = 2,
-        chapterHeader = "Детали визита",
-        items = listOf(
-            ChapterItem("Дата визита"),
-            ChapterItem("К кому"),
-            ChapterItem("Причина визита")
+        chapter = 2, chapterHeader = "Детали визита", items = listOf(
+            ChapterItem("Дата визита", ChapterTextField.VISIT_DATE),
+            ChapterItem("К кому", ChapterTextField.WHO_TO_VISIT),
+            ChapterItem("Причина визита", ChapterTextField.VISIT_REASON)
         )
     )
     RequestChapter(
         chapter = 3, chapterHeader = "Адрес электронной почты", items = listOf(
-            ChapterItem("Адрес электронной почты")
+            ChapterItem("Адрес электронной почты", ChapterTextField.EMAIL)
         )
     )
 }
+
 
 @Composable
 fun RequestChapter(chapter: Int, chapterHeader: String, items: List<ChapterItem>) {
@@ -165,8 +167,7 @@ fun RequestChapter(chapter: Int, chapterHeader: String, items: List<ChapterItem>
                     .padding(top = 4.dp, bottom = 4.dp)
                     .drawBehind {
                         drawCircle(
-                            color = Cyan,
-                            radius = size.width / 2f
+                            color = Cyan, radius = size.width / 2f
                         )
                         drawCircle(
                             color = Color.White,
@@ -209,14 +210,41 @@ fun RequestChapter(chapter: Int, chapterHeader: String, items: List<ChapterItem>
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TextField(item: ChapterItem) {
-    var text by remember { mutableStateOf("") }
+    val requestViewModel = hiltViewModel<SendRequestViewModel>()
+    val chapterTextFieldType = item.viewModelMapField
+    val textState = requestViewModel.fieldToValue[chapterTextFieldType]?.observeAsState()
+
+    val isNumeric = chapterTextFieldType == ChapterTextField.VISIT_DATE
+            || chapterTextFieldType == ChapterTextField.PASSPORT_ISSUE_DATE
+//            || chapterTextFieldType == ChapterTextField.PASSPORT_NUMBER_AND_SERIES
 
     OutlinedTextField(
-        value = text,
+        value = textState?.value ?: "",
         onValueChange = {
-            text = it
+            requestViewModel.fieldToValue[chapterTextFieldType]?.value = it.trim()
         },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = if (isNumeric) {
+                KeyboardType.Number
+            } else if (chapterTextFieldType == ChapterTextField.EMAIL) {
+                KeyboardType.Email
+            } else {
+                KeyboardType.Text
+            },
+            capitalization = if (chapterTextFieldType == ChapterTextField.EMAIL) {
+                KeyboardCapitalization.None
+            } else {
+                KeyboardCapitalization.Sentences
+            }
+        ),
         label = { Text(item.hint) },
+        placeholder = {
+            if (chapterTextFieldType == ChapterTextField.PASSPORT_NUMBER_AND_SERIES) {
+                Text(text = "6516 123456")
+            } else if (chapterTextFieldType == ChapterTextField.PASSPORT_ISSUE_DATE || chapterTextFieldType == ChapterTextField.VISIT_DATE) {
+                Text(text = "01.01.1970")
+            }
+        },
         modifier = Modifier.padding(start = 46.dp, top = 20.dp),
         colors = TextFieldDefaults.outlinedTextFieldColors(
             textColor = Color.White,
@@ -231,5 +259,9 @@ private fun TextField(item: ChapterItem) {
 }
 
 data class ChapterItem(
-    val hint: String
+    val hint: String, val viewModelMapField: ChapterTextField
 )
+
+enum class ChapterTextField {
+    NAME, SURNAME, PATRONYMIC, PASSPORT_NUMBER_AND_SERIES, PASSPORT_ISSUE_DATE, PASSPORT_ISSUED_BY, VISIT_DATE, WHO_TO_VISIT, VISIT_REASON, EMAIL
+}

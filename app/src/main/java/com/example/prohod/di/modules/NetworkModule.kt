@@ -38,16 +38,17 @@ class NetworkModule {
     ): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(logging)
-//            .addInterceptor { chain ->
-//                val request = chain.request().newBuilder()
-//                    .addHeader("Content-Type", "application/json; charset=utf-8")
-//                    .build()
-//                val response = chain.proceed(request)
-//                response
-//            }
             .addInterceptor(bearerTokenInterceptor)
             .build()
     }
+
+    @Singleton
+    @Provides
+    fun provideNeedTokenUpdateImpl(): NeedTokenUpdateImpl = NeedTokenUpdateImpl()
+
+    @Singleton
+    @Provides
+    fun provideINeedTokenUpdate(needTokenUpdateImpl: NeedTokenUpdateImpl): INeedTokenUpdate = needTokenUpdateImpl
 
     @OptIn(ExperimentalSerializationApi::class)
     @Singleton
